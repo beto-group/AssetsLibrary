@@ -4,7 +4,7 @@ contributor: []
 version: 1.5.3
 id: assets-library-520
 name: ASSETS LIBRARY
-description: A high-performance, self-managing library that automatically syncs Excalidraw assets from GitHub, converts them to SVGs, and displays them in an interactive infinite canvas.
+description: A self-managing library that automatically syncs Excalidraw assets from GitHub, converts them to SVGs, and displays them in an interactive infinite canvas.
 status: stable
 complexity: advanced
 category:

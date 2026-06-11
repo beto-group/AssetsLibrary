@@ -25,12 +25,12 @@
 
 <div align="center">
   <p>
-    <i> A high-performance, self-managing library that automatically syncs Excalidraw assets from GitHub, converts them to SVGs, and displays them in an interactive infinite canvas. </i>
+    <i> A self-managing library that automatically syncs Excalidraw assets from GitHub, converts them to SVGs, and displays them in an interactive infinite canvas. </i>
   </p>
   <hr style="width:30%;">
 </div>
 
-Welcome to **Assets Library**, a powerful synchronization and infinite canvas rendering manager for Excalidraw designs. By downloading and converting drawing components in the background, it provides a seamless visual grid and force-directed graph view of all your assets.
+Welcome to **Assets Library**, a synchronization and infinite canvas rendering manager for Excalidraw designs. By downloading and converting drawing components in the background, it provides a seamless visual grid and force-directed graph view of all your assets.
 
 ---
 
