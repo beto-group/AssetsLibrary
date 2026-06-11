@@ -61,6 +61,8 @@ const EXPORT_PADDING = 15;
 const EXCALIDRAW_CDN_URL = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.6/+esm";
 const EXCALIDRAW_ASSET_PATH = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.6/dist/prod/";
 const LZ_STRING_CDN_URL = "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js";
+const REACT_CDN_URL = "https://unpkg.com/react@18.2.0/umd/react.production.min.js";
+const REACT_DOM_CDN_URL = "https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js";
 const MAX_CONCURRENCY = 1;
 
 // GitHub repo configuration
@@ -2055,6 +2057,31 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
             try {
                 log('Loading dependencies...');
                 window.EXCALIDRAW_ASSET_PATH = EXCALIDRAW_ASSET_PATH;
+
+                // Ensure React and ReactDOM are on window before loading Excalidraw
+                if (!window.React) {
+                    try {
+                        window.React = typeof require !== 'undefined' ? require('react') : null;
+                    } catch (e) {
+                        console.warn("[Assets Library] Failed to require('react'):", e);
+                    }
+                    if (!window.React) {
+                        log('Fetching React UMD...');
+                        await Core.Converter.loadLegacyScript(REACT_CDN_URL, "React", baseDir);
+                    }
+                }
+
+                if (!window.ReactDOM) {
+                    try {
+                        window.ReactDOM = typeof require !== 'undefined' ? (require('react-dom/client') || require('react-dom')) : null;
+                    } catch (e) {
+                        console.warn("[Assets Library] Failed to require('react-dom'):", e);
+                    }
+                    if (!window.ReactDOM) {
+                        log('Fetching ReactDOM UMD...');
+                        await Core.Converter.loadLegacyScript(REACT_DOM_CDN_URL, "ReactDOM", baseDir);
+                    }
+                }
 
                 // --- CORRECTED ---
                 // We now load all dependencies using the same robust legacy script loader.
