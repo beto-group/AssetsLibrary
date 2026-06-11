@@ -4083,13 +4083,22 @@ function useFullscreenEffect(containerRef, isFullscreen) {
 }
 
 const AssetsLibrary = ({ folderPath }) => {
-    // Path to store the configuration localized within the component folder
-    const baseDir = folderPath ? folderPath.replace(/\/[^\/]+\.md$/i, '') : "ASSETS LIBRARY";
-    const CONSENT_FILE_PATH = `${baseDir}/data/config.json`;
-    Core.REMOVED_IMAGES_PATH = `${baseDir}/data/removed.json`;
-    
-    // Get current file path to determine relative font directory
+    // Get current file path to determine relative paths
     const currentFilePath = dc.useCurrentPath();
+    const baseDir = useMemo(() => {
+        if (currentFilePath) {
+            return currentFilePath.substring(0, currentFilePath.lastIndexOf("/"));
+        }
+        return folderPath ? folderPath.replace(/\/[^\/]+\.md$/i, '') : "AssetsLibrary";
+    }, [currentFilePath, folderPath]);
+
+    const CONSENT_FILE_PATH = useMemo(() => `${baseDir}/data/config.json`, [baseDir]);
+    
+    useEffect(() => {
+        if (baseDir) {
+            Core.REMOVED_IMAGES_PATH = `${baseDir}/data/removed.json`;
+        }
+    }, [baseDir]);
 
     const ensureDirRecursive = async (path) => {
         const parts = path.split('/');
@@ -4104,13 +4113,26 @@ const AssetsLibrary = ({ folderPath }) => {
     };
 
     // Default configuration values (dynamic local path defaults to components folder /assets)
-    const [config, setConfig] = useState({
+    const [config, setConfig] = useState(() => ({
         repoOwner: GITHUB_REPO_OWNER,
         repoName: GITHUB_REPO_NAME,
         branch: GITHUB_BRANCH,
         assetsPath: GITHUB_ASSETS_PATH,
-        localPath: folderPath ? `${folderPath.replace(/\/[^\/]+\.md$/, '')}/assets` : FOLDER_PATH
-    });
+        localPath: baseDir ? `${baseDir}/assets` : FOLDER_PATH
+    }));
+
+    // Update config if baseDir resolves later
+    useEffect(() => {
+        setConfig(prev => {
+            if (!prev.localPath || prev.localPath === FOLDER_PATH || prev.localPath.endsWith("/assets")) {
+                return {
+                    ...prev,
+                    localPath: baseDir ? `${baseDir}/assets` : FOLDER_PATH
+                };
+            }
+            return prev;
+        });
+    }, [baseDir]);
 
     const [isLightMode, setIsLightMode] = useState(document.body.classList.contains('theme-light'));
 
@@ -4229,7 +4251,7 @@ const AssetsLibrary = ({ folderPath }) => {
             }
         };
         checkConsent();
-    }, [folderPath]);
+    }, [folderPath, baseDir, CONSENT_FILE_PATH]);
 
     // This function now saves the consent and custom config to a file and updates the state
     const handleConsent = async (customConfig) => {
