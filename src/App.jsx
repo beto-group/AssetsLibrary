@@ -58,8 +58,8 @@ const LOCAL_FONTS_DIR = "data/fonts/futura"; // Local fonts cache directory
 const LOCAL_FONT_PATH = "data/fonts/futura/Futura-CondensedLight.otf"; // Main font file
 const REPO_FONTS_PATH = "_RESOURCES/FONTS/futura"; // Repo fonts directory path
 const EXPORT_PADDING = 15;
-const EXCALIDRAW_CDN_URL = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.18.0/+esm";
-const EXCALIDRAW_ASSET_PATH = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.18.0/dist/prod/";
+const EXCALIDRAW_CDN_URL = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.6/+esm";
+const EXCALIDRAW_ASSET_PATH = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.6/dist/prod/";
 const LZ_STRING_CDN_URL = "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js";
 const MAX_CONCURRENCY = 1;
 
@@ -2043,7 +2043,7 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
     // --- CORRECTED ---
     // Switched to the UMD (Universal Module Definition) version of Excalidraw.
     // This version is a single script file designed for direct browser use and avoids module resolution issues.
-    const EXCALIDRAW_UMD_URL = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.18.0/dist/excalidraw.production.min.js";
+    const EXCALIDRAW_UMD_URL = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.6/dist/excalidraw.production.min.js";
 
 
     const log = useCallback((message) => {
