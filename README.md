@@ -34,6 +34,15 @@ Welcome to **Assets Library**, a synchronization and infinite canvas rendering m
 
 ---
 
+## 🚀 Quick Start
+
+To start trying Assets Library today:
+1. **Download the Repository**: Clone or download this repository directly into any folder inside your Obsidian vault.
+2. **Install Datacore**: Ensure you have the **Datacore** plugin installed and enabled in Obsidian.
+3. **Open the Entry Note**: Open the **`ASSETS LIBRARY.md`** note inside Obsidian to launch the component!
+
+---
+
 ## ✨ Features
 
 ### 🔄 GitHub Auto-Sync & Font Caching
