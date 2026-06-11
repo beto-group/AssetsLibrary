@@ -4269,7 +4269,7 @@ const AssetsLibrary = ({ folderPath }) => {
                 }
                 const gitignorePath = `${localDir}/.gitignore`;
                 if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
-                    await dc.app.vault.adapter.write(gitignorePath, "*\n!.gitignore\n");
+                    await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
                 }
             }
 
@@ -4857,7 +4857,7 @@ const AssetsLibrary = ({ folderPath }) => {
                                 const gitignorePath = `${localDir}/.gitignore`;
                                 if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
                                     console.log("[ASSETS LIBRARY] Writing .gitignore to:", gitignorePath);
-                                    await dc.app.vault.adapter.write(gitignorePath, "*\n!.gitignore\n");
+                                    await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
                                 }
                             }
                             
@@ -5025,7 +5025,7 @@ const AssetsLibrary = ({ folderPath }) => {
                             const gitignorePath = `${localDir}/.gitignore`;
                             if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
                                 console.log("[ASSETS LIBRARY] Writing .gitignore to:", gitignorePath);
-                                await dc.app.vault.adapter.write(gitignorePath, "*\n!.gitignore\n");
+                                await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
                             }
                         }
                         
