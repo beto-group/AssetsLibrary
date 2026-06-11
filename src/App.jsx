@@ -4267,10 +4267,6 @@ const AssetsLibrary = ({ folderPath }) => {
                 if (!(await dc.app.vault.adapter.exists(localDir))) {
                     await ensureDirRecursive(localDir);
                 }
-                const gitignorePath = `${localDir}/.gitignore`;
-                if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
-                    await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
-                }
             }
 
             const consentData = {
@@ -4854,11 +4850,6 @@ const AssetsLibrary = ({ folderPath }) => {
                                     console.log("[ASSETS LIBRARY] Creating local directory:", localDir);
                                     await ensureDirRecursive(localDir);
                                 }
-                                const gitignorePath = `${localDir}/.gitignore`;
-                                if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
-                                    console.log("[ASSETS LIBRARY] Writing .gitignore to:", gitignorePath);
-                                    await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
-                                }
                             }
                             
                             setFileListVersion(v => v + 1);
@@ -5021,11 +5012,6 @@ const AssetsLibrary = ({ folderPath }) => {
                             if (!(await dc.app.vault.adapter.exists(localDir))) {
                                 console.log("[ASSETS LIBRARY] Creating local directory:", localDir);
                                 await ensureDirRecursive(localDir);
-                            }
-                            const gitignorePath = `${localDir}/.gitignore`;
-                            if (!(await dc.app.vault.adapter.exists(gitignorePath))) {
-                                console.log("[ASSETS LIBRARY] Writing .gitignore to:", gitignorePath);
-                                await dc.app.vault.adapter.write(gitignorePath, "/*/\n!/.gitignore\n");
                             }
                         }
                         
