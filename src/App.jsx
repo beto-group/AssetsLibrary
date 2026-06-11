@@ -2041,6 +2041,13 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
     const [conversionProgress, setConversionProgress] = useState({ processed: 0, total: 0, skipped: 0 });
     const [isConverting, setIsConverting] = useState(false);
     const dependenciesRef = useRef(null);
+    const isCancelledRef = useRef(false);
+
+    useEffect(() => {
+        return () => {
+            isCancelledRef.current = true;
+        };
+    }, []);
 
     // --- CORRECTED ---
     // Switched to the UMD (Universal Module Definition) version of Excalidraw.
@@ -2220,6 +2227,7 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
             
             const dependencyMap = new Map();
             for (const file of filesToConvert) {
+                if (isCancelledRef.current) return;
                 const deps = await detectDependencies(file);
                 if (deps.length > 0) {
                     dependencyMap.set(file.path, deps);
@@ -2252,6 +2260,7 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
 
             const worker = async () => {
                 while (queue.length > 0) {
+                    if (isCancelledRef.current) break;
                     const file = queue.shift();
                     if (!file) continue;
                     
@@ -2315,6 +2324,12 @@ const useGitHubSync = (converterStatus, converterDeps, hasConsented, CONSENT_FIL
     useEffect(() => {
         configRef.current = config;
     }, [config]);
+
+    useEffect(() => {
+        return () => {
+            isCancelledRef.current = true;
+        };
+    }, []);
 
     const log = useCallback((message) => {
         setSyncLogs(prev => [`[${new Date().toLocaleTimeString()}] ${message}`, ...prev.slice(0, 100)]);
