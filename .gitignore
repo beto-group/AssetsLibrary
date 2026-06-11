@@ -1,0 +1,8 @@
+# Ignore OS generated files
+.DS_Store
+
+# Ignore all subdirectories inside assets/ (where git-synced repositories are saved)
+assets/*/
+
+# Ignore component local configuration
+data/config.json
