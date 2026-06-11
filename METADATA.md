@@ -37,7 +37,7 @@ storage:
   - Obsidian Configuration
 network: Online
 runtime: React
-entry_point: AssetsLibrary.md
+entry_point: ASSETS LIBRARY.md
 logic: src/index.jsx
 ---
 
