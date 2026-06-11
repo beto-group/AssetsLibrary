@@ -2142,7 +2142,7 @@ const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
             await new Promise(resolve => setTimeout(resolve, 0));
             
             const allFiles = dc.app.vault.getFiles();
-            const paths = (config?.localPath || FOLDER_PATH).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
+            const paths = (config?.localPath || (baseDir ? `${baseDir}/assets` : FOLDER_PATH)).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
             const filesInFolder = allFiles.filter(f => paths.some(p => f.path.startsWith(p)));
             const mdFiles = filesInFolder.filter(f => f.extension === 'md');
             const svgFilesMap = new Map(filesInFolder.filter(f => f.extension === 'svg').map(f => [f.path.replace(/\.svg$/i, ''), f]));
@@ -4212,7 +4212,7 @@ const AssetsLibrary = ({ folderPath }) => {
                         repoName: GITHUB_REPO_NAME,
                         branch: GITHUB_BRANCH,
                         assetsPath: GITHUB_ASSETS_PATH,
-                        localPath: ""
+                        localPath: baseDir ? `${baseDir}/assets` : FOLDER_PATH
                     };
                     const dir = CONSENT_FILE_PATH.substring(0, CONSENT_FILE_PATH.lastIndexOf("/"));
                     if (!(await dc.app.vault.adapter.exists(dir))) {
@@ -4288,7 +4288,7 @@ const AssetsLibrary = ({ folderPath }) => {
         const pendingFiles = new Set();
         
         const handleFileChange = (file) => {
-            const paths = (config.localPath || FOLDER_PATH).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
+            const paths = (config.localPath || (baseDir ? `${baseDir}/assets` : FOLDER_PATH)).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
             if (paths.some(p => file.path.startsWith(p)) && file.extension === 'md') {
                 // Add to pending set to deduplicate
                 pendingFiles.add(file.path);
@@ -4327,7 +4327,7 @@ const AssetsLibrary = ({ folderPath }) => {
         const loadFiles = async () => {
             try {
                 const allFiles = dc.app.vault.getFiles();
-                const paths = (config.localPath || FOLDER_PATH).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
+                const paths = (config.localPath || (baseDir ? `${baseDir}/assets` : FOLDER_PATH)).split(/[,,;]/).map(p => p.trim()).filter(Boolean);
                 const filesInPath = allFiles.filter(file => paths.some(p => file.path.startsWith(p)));
 
                 const svgFiles = filesInPath.filter(file => file.extension === 'svg');
