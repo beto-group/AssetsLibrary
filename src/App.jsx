@@ -749,14 +749,76 @@ text {
             }
         },
 
-        loadLegacyScript: (url, globalName) => {
+        loadLegacyScript: async (url, globalName, baseDir = null) => {
+            if (window[globalName]) { return; }
+            
+            let scriptContent = null;
+            let localCachePath = null;
+            
+            if (baseDir) {
+                const fileName = url.split('/').pop() || `${globalName}.js`;
+                localCachePath = `${baseDir}/data/cache/${fileName}`;
+                
+                try {
+                    if (await dc.app.vault.adapter.exists(localCachePath)) {
+                        scriptContent = await dc.app.vault.adapter.read(localCachePath);
+                    }
+                } catch (e) {
+                    console.warn(`[Assets Library] Failed to read cached script ${fileName}:`, e);
+                }
+            }
+            
+            if (!scriptContent) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                    scriptContent = await response.text();
+                    
+                    if (localCachePath) {
+                        try {
+                            const cacheDir = localCachePath.substring(0, localCachePath.lastIndexOf("/"));
+                            const dirParts = cacheDir.split('/');
+                            let currentPath = '';
+                            for (const part of dirParts) {
+                                if (!part) continue;
+                                currentPath = currentPath ? `${currentPath}/${part}` : part;
+                                if (!(await dc.app.vault.adapter.exists(currentPath))) {
+                                    await dc.app.vault.adapter.mkdir(currentPath);
+                                }
+                            }
+                            await dc.app.vault.adapter.write(localCachePath, scriptContent);
+                        } catch (e) {
+                            console.warn(`[Assets Library] Failed to write cache for ${localCachePath}:`, e);
+                        }
+                    }
+                } catch (e) {
+                    throw new Error(`Failed to fetch script from CDN ${url}: ${e.message}`);
+                }
+            }
+            
             return new Promise((resolve, reject) => {
-                if (window[globalName]) { return resolve(); }
-                const script = document.createElement('script');
-                script.src = url; script.async = true;
-                script.onload = () => { if (window[globalName]) { resolve(); } else { reject(new Error(`Script loaded but global '${globalName}' not found.`)); } };
-                script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
-                document.head.appendChild(script);
+                try {
+                    const blob = new Blob([scriptContent], { type: 'application/javascript' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    const script = document.createElement('script');
+                    script.src = blobUrl;
+                    script.async = true;
+                    script.onload = () => {
+                        URL.revokeObjectURL(blobUrl);
+                        if (window[globalName]) {
+                            resolve();
+                        } else {
+                            reject(new Error(`Script loaded but global '${globalName}' not found.`));
+                        }
+                    };
+                    script.onerror = () => {
+                        URL.revokeObjectURL(blobUrl);
+                        reject(new Error(`Failed to load script from blob URL.`));
+                    };
+                    document.head.appendChild(script);
+                } catch (e) {
+                    reject(e);
+                }
             });
         }
     }
@@ -1970,7 +2032,7 @@ const useGraphCanvas = ({ containerRef, canvasRef, imageCache, requestImages, re
  */
 
 
-const useExcalidrawConverter = (currentFilePath, config) => {
+const useExcalidrawConverter = (currentFilePath, config, baseDir) => {
     const [status, setStatus] = useState('loading'); // loading, ready, error
     const [error, setError] = useState(null);
     const [logs, setLogs] = useState([]);
@@ -1997,8 +2059,8 @@ const useExcalidrawConverter = (currentFilePath, config) => {
                 // --- CORRECTED ---
                 // We now load all dependencies using the same robust legacy script loader.
                 // The browser's own HTTP cache will handle storing and retrieving the script after the first load.
-                const excalidrawPromise = Core.Converter.loadLegacyScript(EXCALIDRAW_UMD_URL, "ExcalidrawLib");
-                const lzStringPromise = Core.Converter.loadLegacyScript(LZ_STRING_CDN_URL, "LZString");
+                const excalidrawPromise = Core.Converter.loadLegacyScript(EXCALIDRAW_UMD_URL, "ExcalidrawLib", baseDir);
+                const lzStringPromise = Core.Converter.loadLegacyScript(LZ_STRING_CDN_URL, "LZString", baseDir);
 
                 // Wait for scripts to be loaded (fonts will be loaded on-demand when needed)
                 await Promise.all([excalidrawPromise, lzStringPromise]);
@@ -4066,7 +4128,7 @@ const AssetsLibrary = ({ folderPath }) => {
     // Apply full-tab effect when in fullscreen mode
     useFullscreenEffect(containerRef, isFullscreen);
 
-    const { status: converterStatus, error: converterError, logs: converterLogs, runConversionCheck, converterDeps, conversionProgress, isConverting } = useExcalidrawConverter(currentFilePath, config);
+    const { status: converterStatus, error: converterError, logs: converterLogs, runConversionCheck, converterDeps, conversionProgress, isConverting } = useExcalidrawConverter(currentFilePath, config, baseDir);
     
     // Initialize GitHub sync hook with converter dependencies and consent status
     const { syncStatus, syncProgress, syncLogs, syncError, syncFromGitHub, cancelSync } = useGitHubSync(converterStatus, converterDeps, hasConsented, CONSENT_FILE_PATH, currentFilePath, config);

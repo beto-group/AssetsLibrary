@@ -4,5 +4,6 @@
 # Ignore all subdirectories inside assets/ (where git-synced repositories are saved)
 assets/*/
 
-# Ignore component local configuration
+# Ignore component local configuration and cache files
 data/config.json
+data/cache/
