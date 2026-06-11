@@ -91,7 +91,7 @@ async function View({ folderPath }) {
         dc.useEffect(() => {
             const load = async () => {
                 try {
-                    const appPath = dc.resolvePath("ASSETS LIBRARY/src/App.jsx") || (folderPath ? (folderPath.replace(/\/[^\/]+\.md$/, '') + '/src/App.jsx') : 'src/App.jsx');
+                    const appPath = dc.resolvePath("AssetsLibrary/src/App.jsx") || (folderPath ? (folderPath.replace(/\/[^\/]+\.md$/, '') + '/src/App.jsx') : 'src/App.jsx');
                     const { AssetsLibrary } = await dc.require(appPath);
                     setApp({ AssetsLibrary });
                 } catch (e) {

@@ -3,7 +3,7 @@ author: beto.group
 contributor: []
 version: 1.5.3
 id: assets-library-520
-name: ASSETS LIBRARY
+name: AssetsLibrary
 description: A self-managing library that automatically syncs Excalidraw assets from GitHub, converts them to SVGs, and displays them in an interactive infinite canvas.
 status: stable
 complexity: advanced
@@ -37,7 +37,7 @@ storage:
   - Obsidian Configuration
 network: Online
 runtime: React
-entry_point: ASSETS LIBRARY.md
+entry_point: AssetsLibrary.md
 logic: src/index.jsx
 ---
 
